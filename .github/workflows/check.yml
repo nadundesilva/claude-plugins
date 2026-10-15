@@ -1,0 +1,71 @@
+name: Check
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    types:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: ./.github/actions/setup
+              with:
+                  install-claude: "true"
+                  generate-types: "true"
+            - run: pnpm types:check
+
+    lint:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: ./.github/actions/setup
+            - run: pnpm lint
+
+    format:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: ./.github/actions/setup
+            - run: pnpm format:check
+
+    validate:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: ./.github/actions/setup
+              with:
+                  install-claude: "true"
+            - run: pnpm validate
+
+    test:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  persist-credentials: false
+            - uses: ./.github/actions/setup
+              with:
+                  install-claude: "true"
+            - run: pnpm test

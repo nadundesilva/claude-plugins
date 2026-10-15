@@ -1,0 +1,36 @@
+{
+    "private": true,
+    "license": "Apache-2.0",
+    "scripts": {
+        "types:gen": "rc=0; for d in plugins/*/; do CLAUDE_CODE_PLUGIN_DIR_WATCH=1 claude -p 'reply with ok' --plugin-dir \"$d\" || rc=1; done; exit $rc",
+        "postinstall": "pnpm types:gen",
+        "prepare": "husky",
+        "types:check": "for d in plugins/*/; do tsc -p \"$d\" || exit 1; done",
+        "lint": "eslint .",
+        "validate": "claude plugin validate . && for d in plugins/*/; do claude plugin validate \"$d\" || exit 1; done",
+        "test": "for d in plugins/*/; do claude plugin test \"$d\" || exit 1; done",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devEngines": {
+        "packageManager": {
+            "name": "pnpm",
+            "version": "^12.11.2",
+            "onFail": "download"
+        },
+        "runtime": {
+            "name": "node",
+            "version": "^24",
+            "onFail": "download"
+        }
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.12.0",
+        "husky": "^9.1.7",
+        "prettier": "^3.9.10",
+        "prettier-plugin-organize-imports": "^4.3.0",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.71.2"
+    }
+}
