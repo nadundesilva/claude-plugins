@@ -1,0 +1,37 @@
+{
+    "private": true,
+    "license": "Apache-2.0",
+    "scripts": {
+        "types:gen": "CLAUDE_CODE_PLUGIN_DIR_WATCH=1 pnpm -r --no-bail exec claude -p 'reply with ok' --plugin-dir .",
+        "postinstall": "pnpm types:gen",
+        "prepare": "husky",
+        "types:check": "pnpm -r exec tsc -p .",
+        "lint": "eslint .",
+        "validate": "claude plugin validate . && pnpm -r exec claude plugin validate .",
+        "test": "pnpm -r exec claude plugin test .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devEngines": {
+        "packageManager": {
+            "name": "pnpm",
+            "version": "^12.11.2",
+            "onFail": "download"
+        },
+        "runtime": {
+            "name": "node",
+            "version": "^24",
+            "onFail": "download"
+        }
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@tsconfig/strictest": "^2.0.8",
+        "eslint": "^10.12.0",
+        "husky": "^9.1.7",
+        "prettier": "^3.9.10",
+        "prettier-plugin-organize-imports": "^4.3.0",
+        "typescript": "catalog:",
+        "typescript-eslint": "^8.71.2"
+    }
+}

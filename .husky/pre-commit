@@ -1,0 +1,5 @@
+pnpm format:check
+pnpm lint
+pnpm types:check
+pnpm validate
+pnpm test

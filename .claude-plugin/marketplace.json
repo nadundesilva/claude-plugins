@@ -1,0 +1,13 @@
+{
+    "name": "nadundesilva",
+    "owner": {
+        "name": "Nadun De Silva"
+    },
+    "description": "Claude Code plugins by Nadun De Silva",
+    "plugins": [
+        {
+            "name": "hud",
+            "source": "./plugins/hud"
+        }
+    ]
+}

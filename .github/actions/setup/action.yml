@@ -1,0 +1,52 @@
+name: Setup
+description: Install pnpm, Node.js and the dependencies, optionally generating the Claude Code types.
+
+inputs:
+    install-claude:
+        description: Install the Claude Code CLI.
+        default: "false"
+    generate-types:
+        description: Generate `.claude-plugin/types/` for every plugin. Needs `install-claude`.
+        default: "false"
+
+runs:
+    using: composite
+    steps:
+        - name: Install pnpm and Node.js
+          uses: pnpm/action-setup@v6
+          with:
+              version: 12
+              runtime: node@24
+              cache: true
+              install: false
+
+        # `postinstall` would run `claude`, which needs a login, so skip it here.
+        - name: Install dependencies
+          shell: bash
+          run: pnpm install --ignore-scripts
+
+        # The API of the mod moves between Claude Code releases, so pin it.
+        - name: Install Claude Code
+          if: inputs.install-claude == 'true'
+          shell: bash
+          env:
+              # renovate: datasource=npm depName=@anthropic-ai/claude-code
+              CLAUDE_CODE_VERSION: "2.1.300"
+          run: |
+              curl -fsSL https://claude.ai/install.sh | bash -s -- "$CLAUDE_CODE_VERSION"
+              echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+        # The engine writes the types while loading the mod, before any model
+        # call, so a placeholder key is enough. The call itself then fails with
+        # "Invalid API key" and exits non-zero, hence the explicit file check.
+        - name: Generate types
+          if: inputs.generate-types == 'true'
+          shell: bash
+          env:
+              ANTHROPIC_API_KEY: placeholder-not-a-real-key
+          run: |
+              export PATH="$HOME/.local/bin:$PATH"
+              pnpm types:gen || true
+              for d in plugins/*/; do
+                  test -f "${d}.claude-plugin/types/claude-code/index.d.ts"
+              done

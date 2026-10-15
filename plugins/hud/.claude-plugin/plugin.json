@@ -1,0 +1,11 @@
+{
+    "name": "hud",
+    "version": "0.1.0",
+    "description": "HUD for Claude Code",
+    "author": {
+        "name": "Nadun De Silva"
+    },
+    "license": "Apache-2.0",
+    "repository": "https://github.com/nadundesilva/claude-plugins",
+    "types": "./types/index.d.ts"
+}
